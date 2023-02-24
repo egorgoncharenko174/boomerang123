@@ -1,12 +1,13 @@
+const Game = require("./src/Game");
 // Основной файл.
 // Запускает игру.
-const Game = require('./src/Game');
 
 // Инициализация игры с настройками.
+const name = process.argv[2];
 const game = new Game({
-  trackLength: 30,
+  trackLength: 50,
 });
 
+// Запуск игры.\
 
-// Запуск игры.
-game.play();
+game.play(name);
