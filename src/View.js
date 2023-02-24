@@ -1,5 +1,4 @@
 // Сделаем отдельный класс для отображения игры в консоли.
-
 class View {
   render(game) {
     const yourTeamName = "Elbrus";
