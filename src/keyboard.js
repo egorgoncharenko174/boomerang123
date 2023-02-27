@@ -16,23 +16,23 @@ const keyboard = {
 // Какая-то функция.
 
 function runInteractiveConsole(x) {
-  const keyboard = {
-    a: () => x.moveLeft(),
-    d: () => x.moveRight(),
-    q: () => x.attack(),
-    r: () => console.log("r"),
-    t: () => console.log("t"),
-    y: () => console.log("y"),
-  };
+  // const keyboard = {
+  //   a: () => x.moveLeft(),
+  //   d: () => x.moveRight(),
+  //   q: () => x.attack(),
+  //   r: () => console.log('r'),
+  //   t: () => console.log('t'),
+  //   y: () => console.log('y'),
+  // };
   keypress(process.stdin);
-  process.stdin.on("keypress", (ch, key) => {
+  process.stdin.on('keypress', (ch, key) => {
     if (key) {
       // Вызывает команду, соответствующую нажатой кнопке.
       if (key.name in keyboard) {
         keyboard[key.name]();
       }
       // Прерывание программы.
-      if (key.ctrl && key.name === "c") {
+      if (key.ctrl && key.name === 'c') {
         process.exit();
       }
     }

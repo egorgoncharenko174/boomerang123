@@ -3,8 +3,7 @@
 // Или можно не импортировать,
 // а передавать все нужные объекты прямо из run.js при инициализации new Game().
 
-const { User, sequelize } = require("../db/models");
-
+const { User, sequelize } = require('../db/models');
 
 // const fs = require('fs').promises;
 const { EOL } = require('os');
@@ -87,8 +86,7 @@ class Game {
       this.boomerang.skin;
   }
 
-  check(name) {
-  
+  async check(name) {
     if (
       (this.hero.position === this.enemy.position &&
         this.hero.trackP === this.enemy.trackPe) ||
@@ -102,7 +100,8 @@ class Game {
         this.hero.trackP === this.enemy4.trackPe) ||
       this.hero.position <= 0 ||
       this.hero.position > this.trackLength
-    ) { await main(name, this.score);
+    ) {
+      await main(name, this.score);
       this.hero.die();
     }
 

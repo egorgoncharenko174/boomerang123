@@ -1,7 +1,6 @@
 const Boomerang = require("./Boomerang");
 // Наш герой.
 
-const Boomerang = require('./Boomerang');
 
 class Hero {
   constructor({ position } = {}) {
