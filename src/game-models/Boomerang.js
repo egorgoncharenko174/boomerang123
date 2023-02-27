@@ -26,13 +26,21 @@ class Boomerang {
 
   moveLeft() {
     // Идём влево.
-    this.position -= 1;
+    let left = setInterval(() => {
+      this.position -= 1;
+    }, 100);
+    setTimeout(() => {
+      clearInterval(left);
+    }, 1000);
   }
 
   moveRight() {
     // Идём вправо.
     this.position += 1;
     this.count += 1;
+  }
+  die() {
+    this.position = "?";
   }
 }
 module.exports = Boomerang;

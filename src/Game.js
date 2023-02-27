@@ -3,6 +3,9 @@
 // Или можно не импортировать,
 // а передавать все нужные объекты прямо из run.js при инициализации new Game().
 
+const { User, sequelize } = require("../db/models");
+
+
 // const fs = require('fs').promises;
 const { EOL } = require('os');
 const Hero = require('./game-models/Hero');
@@ -16,6 +19,13 @@ let time = 0;
 
 // Основной класс игры.
 // Тут будут все настройки, проверки, запуск.
+async function main(name, score) {
+  await User.create({
+    name,
+    score,
+  });
+  sequelize.close();
+}
 
 class Game {
   constructor({ trackLength }) {
@@ -31,6 +41,7 @@ class Game {
     this.upBorder = [];
     this.downBorder = [];
     this.track = [];
+
     this.track1 = [];
     this.track2 = [];
     this.track3 = [];
@@ -44,12 +55,14 @@ class Game {
     keyboard.q = () => {
       this.boomerang.fly(this.hero.position, this.hero.trackP);
     };
+
     this.regenerateTrack();
   }
 
   regenerateTrack() {
     // Сборка всего необходимого (герой, враг(и), оружие)
     // в единую структуру данных
+
     this.upBorder = new Array(33).fill('🌴');
     this.downBorder = new Array(33).fill('🌴');
     this.track = new Array(this.trackLength).fill(' ');
@@ -75,6 +88,7 @@ class Game {
   }
 
   check(name) {
+  
     if (
       (this.hero.position === this.enemy.position &&
         this.hero.trackP === this.enemy.trackPe) ||
@@ -88,7 +102,7 @@ class Game {
         this.hero.trackP === this.enemy4.trackPe) ||
       this.hero.position <= 0 ||
       this.hero.position > this.trackLength
-    ) {
+    ) { await main(name, this.score);
       this.hero.die();
     }
 

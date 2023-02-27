@@ -1,5 +1,6 @@
 // Сделаем отдельный класс для отображения игры в консоли.
 
+
 const { EOL } = require('os');
 class View {
   render(field, down, up) {

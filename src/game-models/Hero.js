@@ -1,3 +1,4 @@
+const Boomerang = require("./Boomerang");
 // Наш герой.
 
 const Boomerang = require('./Boomerang');
@@ -34,6 +35,7 @@ class Hero {
   attack() {
     // Атакуем.
     this.boomerang.fly();
+    this.boomerang.position = this.position;
   }
   die() {
     this.skin = '💀';
