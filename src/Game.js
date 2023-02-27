@@ -1,12 +1,22 @@
+/* eslint-disable camelcase */
 // Импортируем всё необходимое.
 // Или можно не импортировать,
 // а передавать все нужные объекты прямо из run.js при инициализации new Game().
+
 const { User, sequelize } = require("../db/models");
-const Hero = require("./game-models/Hero");
-const Enemy = require("./game-models/Enemy");
-// const Boomerang = require('./game-models/Boomerang');
-const View = require("./View");
-const { runInteractiveConsole } = require("./keyboard");
+
+
+// const fs = require('fs').promises;
+const { EOL } = require('os');
+const Hero = require('./game-models/Hero');
+const Enemy = require('./game-models/Enemy');
+const Boomerang = require('./game-models/Boomerang');
+const View = require('./View');
+// const clc = require('cli-color');
+const keyboard = require('./keyboard');
+let time = 0;
+// const { Gamer, sequelize } = require('../db/models');
+
 // Основной класс игры.
 // Тут будут все настройки, проверки, запуск.
 async function main(name, score) {
@@ -20,53 +30,177 @@ async function main(name, score) {
 class Game {
   constructor({ trackLength }) {
     this.trackLength = trackLength;
+    this.boomerang = new Boomerang();
     this.hero = new Hero(); // Герою можно аргументом передать бумеранг.
     this.enemy = new Enemy();
+    this.enemy1 = new Enemy();
+    this.enemy2 = new Enemy();
+    this.enemy3 = new Enemy();
+    this.enemy4 = new Enemy();
     this.view = new View();
+    this.upBorder = [];
+    this.downBorder = [];
     this.track = [];
-    this.score = 0;
+
+    this.track1 = [];
+    this.track2 = [];
+    this.track3 = [];
+    this.track4 = [];
+    this.field = [];
+    this.score = 0; // add this.score
+    keyboard.a = () => this.hero.moveLeft();
+    keyboard.d = () => this.hero.moveRight();
+    keyboard.w = () => this.hero.moveUp();
+    keyboard.s = () => this.hero.moveDown();
+    keyboard.q = () => {
+      this.boomerang.fly(this.hero.position, this.hero.trackP);
+    };
+
     this.regenerateTrack();
   }
 
   regenerateTrack() {
     // Сборка всего необходимого (герой, враг(и), оружие)
     // в единую структуру данных
-    this.track = new Array(this.trackLength).fill(" ");
-    this.track[this.hero.position] = this.hero.skin;
-    this.track[this.enemy.position] = this.enemy.skin;
-    this.track[this.hero.boomerang.position] = this.hero.boomerang.skin;
+
+    this.upBorder = new Array(33).fill('🌴');
+    this.downBorder = new Array(33).fill('🌴');
+    this.track = new Array(this.trackLength).fill(' ');
+    this.track1 = new Array(this.trackLength).fill(' ');
+    this.track2 = new Array(this.trackLength).fill(' ');
+    this.track3 = new Array(this.trackLength).fill(' ');
+    this.track4 = new Array(this.trackLength).fill(' ');
+    this.field = [
+      this.track1,
+      this.track,
+      this.track2,
+      this.track3,
+      this.track4,
+    ];
+    this.field[this.hero.trackP][this.hero.position] = this.hero.skin;
+    this.field[this.enemy1.trackPe][this.enemy1.position] = this.enemy1.skin;
+    this.field[this.enemy.trackPe][this.enemy.position] = this.enemy.skin;
+    this.field[this.enemy2.trackPe][this.enemy2.position] = this.enemy2.skin;
+    this.field[this.enemy3.trackPe][this.enemy3.position] = this.enemy3.skin;
+    this.field[this.enemy4.trackPe][this.enemy4.position] = this.enemy4.skin;
+    this.field[this.boomerang.trackPb][this.boomerang.position] =
+      this.boomerang.skin;
   }
 
-  async check(name) {
-    if (this.hero.position === this.enemy.position) {
-      await main(name, this.score);
+  check(name) {
+  
+    if (
+      (this.hero.position === this.enemy.position &&
+        this.hero.trackP === this.enemy.trackPe) ||
+      (this.hero.position === this.enemy1.position &&
+        this.hero.trackP === this.enemy1.trackPe) ||
+      (this.hero.position === this.enemy2.position &&
+        this.hero.trackP === this.enemy2.trackPe) ||
+      (this.hero.position === this.enemy3.position &&
+        this.hero.trackP === this.enemy3.trackPe) ||
+      (this.hero.position === this.enemy4.position &&
+        this.hero.trackP === this.enemy4.trackPe) ||
+      this.hero.position <= 0 ||
+      this.hero.position > this.trackLength
+    ) { await main(name, this.score);
       this.hero.die();
     }
+
     if (
-      this.hero.boomerang.position - 1 === this.enemy.position ||
-      this.hero.boomerang.position + 1 === this.enemy.position ||
-      this.hero.boomerang.position === this.enemy.position
+      (this.enemy.position === this.boomerang.position &&
+        this.enemy.trackPe === this.boomerang.trackPb) ||
+      (this.boomerang.position + 1 === this.enemy.position &&
+        this.enemy.trackPe === this.boomerang.trackPb)
     ) {
+      this.score += 100; // add this.score
       this.enemy.die();
-      this.hero.boomerang.die();
+    }
+    if (
+      (this.enemy1.position === this.boomerang.position &&
+        this.enemy1.trackPe === this.boomerang.trackPb) ||
+      (this.boomerang.position + 1 === this.enemy1.position &&
+        this.enemy1.trackPe === this.boomerang.trackPb)
+    ) {
       this.score += 100;
+      this.enemy1.die();
     }
-    if (this.hero.boomerang.position < this.hero.position) {
-      this.hero.boomerang.die();
+    if (
+      (this.enemy2.position === this.boomerang.position &&
+        this.enemy2.trackPe === this.boomerang.trackPb) ||
+      (this.boomerang.position + 1 === this.enemy2.position &&
+        this.enemy2.trackPe === this.boomerang.trackPb)
+    ) {
+      this.score += 100;
+      this.enemy2.die();
     }
+    if (
+      (this.enemy3.position === this.boomerang.position &&
+        this.enemy3.trackPe === this.boomerang.trackPb) ||
+      (this.boomerang.position + 1 === this.enemy3.position &&
+        this.enemy3.trackPe === this.boomerang.trackPb)
+    ) {
+      this.score += 100;
+      this.enemy3.die();
+    }
+    if (
+      (this.enemy4.position === this.boomerang.position &&
+        this.enemy4.trackPe === this.boomerang.trackPb) ||
+      (this.boomerang.position + 1 === this.enemy4.position &&
+        this.enemy4.trackPe === this.boomerang.trackPb)
+    ) {
+      this.score += 100;
+      this.enemy4.die();
+    }
+    if (this.enemy1.position === 0) this.enemy1.die();
+    if (this.enemy2.position === 0) this.enemy2.die();
+    if (this.enemy3.position === 0) this.enemy3.die();
+
+    if (this.enemy4.position === 0) this.enemy4.die();
+    if (this.enemy.position === 0) this.enemy.die();
   }
 
+  // async addGamerName(name) {
+  //   try {
+  //     const gamerData = await Gamer.create(
+  //       {
+  //         name,
+  //         score: this.score,
+  //       },
+  //       { logging: false }
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
   play(name) {
-    runInteractiveConsole(this.hero);
     setInterval(() => {
-      // Let's play!
+      time += (time + 50) / 1000;
       this.check(name);
-      this.regenerateTrack();
-      this.view.render(this.track);
       this.enemy.moveLeft();
-      console.log(`Name: ${name}`);
+      this.enemy1.moveLeft();
+      this.enemy2.moveLeft();
+      this.enemy3.moveLeft();
+      this.enemy4.moveLeft();
+      this.regenerateTrack();
+      this.view.render(
+        this.field,
+        this.downBorder,
+        this.upBorder,
+        time,
+        this.score
+      );
       console.log(`Score: ${this.score}`);
-    }, 150);
+      console.log(`Time passed: ${time.toFixed(1)}`);
+      if (time >= 30) {
+        console.log(
+          `${' '.repeat(30)}${'Победа!'} 
+          ${' '.repeat(17)}Твои очки: ${this.score} 
+          ${' '.repeat(13)}Полицейских убито: ${this.score / 100}`
+        );
+        process.exit();
+      }
+    }, 100);
   }
 }
 

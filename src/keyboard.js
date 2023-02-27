@@ -1,10 +1,17 @@
 // Умеешь работать с keypress? Попробуй разобраться в этом файле.
 // Вместо keypress можно использовать и стандартный readline.
 // Главное не используй всё вместе!
-const keypress = require("keypress");
-
+const keypress = require('keypress');
 // Управление.
 // Настроим соответствия нажатий на клавиши и действий в игре.
+const keyboard = {
+  q: () => console.log('q'),
+  w: () => console.log('w'),
+  e: () => console.log('e'),
+  r: () => console.log('r'),
+  t: () => console.log('t'),
+  y: () => console.log('y'),
+};
 
 // Какая-то функция.
 
@@ -34,5 +41,5 @@ function runInteractiveConsole(x) {
 }
 
 // Давай попробуем запустить этот скрипт!
-
-module.exports = { runInteractiveConsole };
+runInteractiveConsole();
+module.exports = keyboard;

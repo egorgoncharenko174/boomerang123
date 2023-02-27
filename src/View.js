@@ -1,13 +1,21 @@
 // Сделаем отдельный класс для отображения игры в консоли.
-class View {
-  render(game) {
-    const yourTeamName = "Elbrus";
 
+
+const { EOL } = require('os');
+class View {
+  render(field, down, up) {
+    const yourTeamName = 'Rock Star Games';
     // Тут всё рисуем.
     console.clear();
-    console.log(game.join(""));
-    console.log("\n\n");
-    console.log(`Created by "${yourTeamName}" with love`);
+    console.log('\n');
+    console.log(up.join(''));
+    // console.log(track1.join(''));
+    // console.log(track.join(''));
+    // console.log(track2.join(''));
+    console.log(field.map((el) => el.join('')).join(EOL));
+    console.log(down.join(''));
+    console.log('\n');
+    console.log(`Produced by: "${yourTeamName}"`);
   }
 }
 
